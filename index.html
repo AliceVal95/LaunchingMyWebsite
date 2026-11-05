@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your First Webpage – Step by Step</title>
+<style>
+  :root {
+    --bg: #fdf8f3;
+    --card: #ffffff;
+    --text: #2d2a26;
+    --muted: #7a7268;
+    --peach: #f6c9a8;
+    --peach-soft: #fdebdc;
+    --mint: #bfe3d0;
+    --mint-soft: #e9f6ef;
+    --lilac-soft: #efeafb;
+    --sun-soft: #fff4d6;
+    --done: #3f9b6e;
+    --line: #efe6dc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Avenir Next", "Nunito", "Segoe UI", -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 18px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 40px 22px 80px; }
+
+  /* Hero */
+  .hero { text-align: center; margin-bottom: 32px; }
+  .hero .emoji { font-size: 3.2rem; }
+  .hero h1 { font-size: 2.2rem; margin: 6px 0 10px; line-height: 1.2; }
+  .hero p { color: var(--muted); margin: 0 auto; max-width: 520px; }
+
+  /* Progress */
+  .progress {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--bg); padding: 12px 0 14px; margin-bottom: 24px;
+  }
+  .progress-label { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; text-align: center; }
+  .bar { height: 12px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .bar span { display: block; height: 100%; width: 0; background: var(--done); border-radius: 99px; transition: width .4s; }
+
+  /* Journey map */
+  .journey {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-bottom: 36px;
+  }
+  .journey a {
+    background: var(--card); border-radius: 18px; padding: 14px 8px;
+    text-align: center; text-decoration: none; color: var(--text);
+    box-shadow: 0 2px 8px rgba(120, 90, 60, .07);
+    font-size: 0.9rem; transition: transform .15s;
+  }
+  .journey a:hover { transform: translateY(-2px); }
+  .journey a span { display: block; font-size: 1.8rem; }
+  .journey a.done { background: var(--mint-soft); }
+
+  .part {
+    font-weight: 700; font-size: 1.05rem; margin: 36px 0 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .part::after { content: ""; flex: 1; height: 2px; background: var(--line); }
+
+  /* Step cards */
+  .step {
+    background: var(--card); border-radius: 22px; margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(120, 90, 60, .07);
+    overflow: hidden; transition: background .3s;
+  }
+  .step.done { background: var(--mint-soft); }
+  .step summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; gap: 14px; padding: 18px 20px;
+  }
+  .step summary::-webkit-details-marker { display: none; }
+  .icon {
+    flex: 0 0 52px; height: 52px; border-radius: 16px;
+    background: var(--peach-soft); font-size: 1.6rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step.done .icon { background: var(--mint); }
+  .step summary h2 { font-size: 1.15rem; margin: 0; flex: 1; }
+  .step summary small { display: block; font-weight: 400; color: var(--muted); font-size: 0.85rem; }
+  .chev { color: var(--muted); transition: transform .2s; }
+  .step[open] .chev { transform: rotate(90deg); }
+
+  .body { padding: 0 22px 22px 86px; }
+  .body p { margin: 0 0 12px; }
+  .body ol { margin: 0 0 14px; padding-left: 22px; }
+  .body li { margin-bottom: 8px; }
+
+  .note { border-radius: 16px; padding: 12px 16px; margin: 14px 0; font-size: 0.95rem; }
+  .note b { display: block; margin-bottom: 2px; }
+  .note.example { background: var(--sun-soft); }
+  .note.why { background: var(--lilac-soft); }
+  .note.careful { background: var(--peach-soft); }
+
+  .name {
+    background: var(--peach-soft); padding: 1px 8px; border-radius: 8px;
+    font-weight: 600; white-space: nowrap;
+  }
+
+  /* Chat bubble prompt */
+  .bubble {
+    background: var(--lilac-soft); border-radius: 20px 20px 20px 6px;
+    padding: 16px 18px; margin: 12px 0; font-size: 0.95rem; position: relative;
+  }
+  .bubble .blank { background: #fff; padding: 0 6px; border-radius: 6px; color: var(--muted); }
+  .copy {
+    margin-top: 10px; background: #fff; border: 0; border-radius: 99px;
+    padding: 7px 16px; font-size: 0.85rem; cursor: pointer; color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,.08); font-family: inherit;
+  }
+  .copy:hover { background: var(--mint); }
+
+  /* Folder picture */
+  .folder {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: var(--sun-soft); border-radius: 16px; padding: 12px 18px; margin: 4px 0 12px;
+  }
+  .folder .f { font-size: 2rem; }
+  .folder .arrow { color: var(--muted); }
+
+  .link-box {
+    background: var(--mint-soft); border-radius: 14px; padding: 12px 16px;
+    text-align: center; font-weight: 600; margin: 10px 0 14px; word-break: break-all;
+  }
+
+  .check {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 16px; padding: 12px 16px;
+    background: var(--bg); border-radius: 14px; cursor: pointer; font-weight: 600;
+  }
+  .step.done .check { background: #fff; }
+  .check input { width: 22px; height: 22px; accent-color: var(--done); }
+
+  /* Finish */
+  .finish {
+    display: none; text-align: center; background: var(--mint-soft);
+    border-radius: 22px; padding: 26px; margin-top: 22px;
+  }
+  .finish.show { display: block; }
+  .finish .emoji { font-size: 3rem; }
+
+  /* Quiz */
+  .quiz { background: var(--card); border-radius: 22px; padding: 24px; margin-top: 40px; box-shadow: 0 2px 10px rgba(120, 90, 60, .07); }
+  .quiz h2 { margin-top: 0; }
+  .q { margin-bottom: 22px; }
+  .q p { font-weight: 600; margin: 0 0 8px; }
+  .q button {
+    display: block; width: 100%; text-align: left; font-family: inherit;
+    background: var(--bg); border: 2px solid transparent; border-radius: 14px;
+    padding: 10px 14px; margin-bottom: 6px; font-size: 0.95rem; cursor: pointer; color: var(--text);
+  }
+  .q button:hover { border-color: var(--peach); }
+  .q button.right { background: var(--mint-soft); border-color: var(--done); }
+  .q button.wrong { background: var(--peach-soft); border-color: #e0906a; }
+  .q .fb { font-size: 0.9rem; color: var(--muted); min-height: 1em; }
+
+  footer { margin-top: 40px; color: var(--muted); font-size: 0.85rem; text-align: center; }
+
+  @media (max-width: 560px) {
+    .body { padding-left: 22px; }
+    .hero h1 { font-size: 1.7rem; }
+    body { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <div class="emoji">🌱</div>
+  <h1>Your First Webpage – Step by Step</h1>
+  <p>No experience needed. An AI writes the code for you – this guide walks you through everything else, until your page is online and you can share the link.</p>
+</div>
+
+<div class="progress">
+  <div class="progress-label" id="progressLabel">0 of 9 steps done</div>
+  <div class="bar"><span id="progressBar"></span></div>
+</div>
+
+<!-- Journey map -->
+<div class="journey">
+  <a href="#s1" data-map="1"><span>📝</span>Plan</a>
+  <a href="#s2" data-map="2"><span>🧰</span>Get the tool</a>
+  <a href="#s3" data-map="3"><span>💬</span>Ask the AI</a>
+  <a href="#s4" data-map="4"><span>💾</span>Save it</a>
+  <a href="#s5" data-map="5"><span>👀</span>Try it</a>
+  <a href="#s6" data-map="6"><span>👤</span>Sign up</a>
+  <a href="#s7" data-map="7"><span>📤</span>Upload</a>
+  <a href="#s8" data-map="8"><span>🌍</span>Go online</a>
+  <a href="#s9" data-map="9"><span>🎉</span>Share</a>
+</div>
+
+<div class="part">Part 1 · Make your page</div>
+
+<!-- STEP 1 -->
+<details class="step" id="s1" open>
+  <summary><span class="icon">📝</span><h2>Plan your page<small>about 5 minutes</small></h2><span class="chev">›</span></summary>
+  <div class="body">
+    <p>Before anything else, decide <b>what your page should show</b>. It's like writing a shopping list before going to the supermarket.</p>
+    <p>Write down two things:</p>
+    <ol>
+      <li><b>What's on it</b> – 3 to 5 short points</li>
+      <li><b>How it looks</b> – one sentence</li>
+    </ol>
+    <div class="note example">
+      <b>Example: a page for a group presentation</b>
+      • Title: "Maternal and Child Health"<br>
+      • A short intro – why the topic matters<br>
+      • 3 key facts<br>
+      • Our group members<br>
+      • Sources<br>
+      <i>Look: calm, light colours, easy to read on a phone.</i>
+    </div>
+    <label class="check"><input type="checkbox" data-step="1"> I know what my page should show</label>
+  </div>
+</details>
+
+<!-- STEP 2 -->
+<details class="step" id="s2">
+  <summary><span class="icon">🧰</span><h2>Get a writing tool for code<small>about 10 minutes</small></h2><span class="chev">›</span></summary>
+  <div class="body">
+    <p>You need a simple program to save the code. Word or Pages won't work – they secretly add extra formatting.</p>
+    <ol>
+      <li>Search for <b>"Visual Studio Code"</b> and download it (free)</li>
+      <li>Install it and open it</li>
+    </ol>
+    <div class="note why">
+      <b>Think of it like…</b>
+      a very plain notebook. It saves exactly what you paste – nothing more.
+    </div>
+    <label class="check"><input type="checkbox" data-step="2"> The program is installed</label>
+  </div>
+</details>
+
+<!-- STEP 3 -->
+<details class="step" id="s3">
+  <summary><span class="icon">💬</span><h2>Ask the AI to build it<small>about 10 minutes</small></h2><span class="chev">›</span></summary>
+  <div class="body">
+    <p>Open an AI chat (for example Claude or ChatGPT) and send a message like this. Fill in the gaps with your plan from step 1:</p>
+    <div class="bubble" id="prompt">
+      Please create a simple webpage as one single index.html file.<br><br>
+      It's about: <span class="blank">your topic</span><br>
+      It should show: <span class="blank">your 3–5 points</span><br>
+      It should look: <span class="blank">your style sentence</span><br><br>
+      It must work on phones and laptops.
+      <br><button class="copy" data-copy="prompt">Copy message</button>
+    </div>
+    <div class="note example">
+      <b>Not happy with the result?</b>
+      Just chat with it: "Make the title bigger", "Use green instead of blue", "Add a section for sources." You'll get an updated version.
+    </div>
+    <div class="note careful">
+      <b>Be careful</b>
+      Anyone can see your page. Don't put private things on it – no home address, passwords or patient information.
+    </div>
+    <label class="check"><input type="checkbox" data-step="3"> I have the code from the AI</label>
+  </div>
+</details>
+
+<!-- STEP 4 -->
+<details class="step" id="s4">
+  <summary><span class="icon">💾</span><h2>Save it on your computer<small>about 5 minutes</small></h2><span class="chev">›</span></summary>
+  <div class="body">
+    <ol>
+      <li>Make a new folder on your Desktop, e.g. <span class="name">my-website</span></li>
+      <li>In Visual Studio Code: <b>File → New File</b></li>
+      <li>Paste everything the AI gave you</li>
+      <li><b>File → Save As</b> → pick your folder → call it <span class="name">index.html</span></li>
+    </ol>
+    <div class="folder"><span class="f">📁</span> my-website <span class="arrow">→</span> <span class="f">📄</span> index.html</div>
+    <div class="note why">
+      <b>Why this exact name?</b>
+      "index.html" is like the front door of a website. The internet always looks for this name first.
+    </div>
+    <label class="check"><input type="checkbox" data-step="4"> My file is saved</label>
+  </div>
+</details>
+
+<!-- STEP 5 -->
+<details class="step" id="s5">
+  <summary><span class="icon">👀</span><h2>Try it out<small>about 5 minutes</small></h2><span class="chev">›</span></summary>
+  <div class="body">
+    <p>Open your folder and <b>double-click index.html</b>. Your page opens in the browser! 🎉</p>
+    <div class="note why">
+      <b>Good to know</b>
+      Right now only <b>you</b> can see it – it's still just on your laptop. Part 2 puts it on the internet.
+    </div>
+    <div class="note example">
+      <b>Something looks off?</b>
+      Tell the AI what you see ("the text is too small on my phone"), paste the new code, save, and open the file again.
+    </div>
+    <label class="check"><input type="checkbox" data-step="5"> My page works on my laptop</label>
+  </div>
+</details>
+
+<div class="part">Part 2 · Put it online</div>
+
+<!-- STEP 6 -->
+<details class="step" id="s6">
+  <summary><span class="icon">👤</span><h2>Sign up at GitHub<small>about 5 minutes</small></h2><span class="chev">›</span></summary>
+  <div class="body">
+    <p><b>GitHub</b> is a free website that can show your page to the world. Think of it as free online storage that turns your file into a real website.</p>
+    <ol>
+      <li>Go to <b>github.com</b> and click <b>Sign up</b></li>
+      <li>Pick a username – it becomes part of your web address</li>
+      <li>Confirm your email</li>
+    </ol>
+    <div class="note example">
+      <b>Example</b>
+      If your username is <span class="name">anna-health</span>, your link will start with <span class="name">anna-health.github.io</span>
+    </div>
+    <label class="check"><input type="checkbox" data-step="6"> I have an account</label>
+  </div>
+</details>
+
+<!-- STEP 7 -->
+<details class="step" id="s7">
+  <summary><span class="icon">📤</span><h2>Upload your file<small>about 10 minutes</small></h2><span class="chev">›</span></summary>
+  <div class="body">
+    <p>First you make an online folder (GitHub calls it a <b>repository</b>), then you drop your file in.</p>
+    <ol>
+      <li>Click the <b>+</b> at the top right → <b>New repository</b></li>
+      <li>Give it a name, e.g. <span class="name">my-website</span></li>
+      <li>Choose <b>Public</b></li>
+      <li>Click <b>Create repository</b></li>
+      <li>Click the link <b>uploading an existing file</b></li>
+      <li>Drag your index.html into the window</li>
+      <li>Click the green <b>Commit changes</b> button</li>
+    </ol>
+    <div class="note why">
+      <b>"Commit changes"?</b>
+      That's just GitHub's way of saying "Save".
+    </div>
+    <label class="check"><input type="checkbox" data-step="7"> My file is uploaded</label>
+  </div>
+</details>
+
+<!-- STEP 8 -->
+<details class="step" id="s8">
+  <summary><span class="icon">🌍</span><h2>Switch on your website<small>about 5 minutes</small></h2><span class="chev">›</span></summary>
+  <div class="body">
+    <ol>
+      <li>In your online folder, click <b>Settings</b></li>
+      <li>On the left, click <b>Pages</b></li>
+      <li>Under "Branch", choose <b>main</b> and click <b>Save</b></li>
+      <li>Get a coffee ☕ – it takes 1–3 minutes</li>
+      <li>Reload the page. You'll see <b>"Your site is live"</b> and your link</li>
+    </ol>
+    <div class="link-box">anna-health.github.io/my-website</div>
+    <div class="note careful">
+      <b>It says "404" or "not found"?</b>
+      Wait a few more minutes. Still not working? Check that your file is called exactly <span class="name">index.html</span>.
+    </div>
+    <label class="check"><input type="checkbox" data-step="8"> My page is online!</label>
+  </div>
+</details>
+
+<!-- STEP 9 -->
+<details class="step" id="s9">
+  <summary><span class="icon">🎉</span><h2>Share it – and change it any time<small>whenever you like</small></h2><span class="chev">›</span></summary>
+  <div class="body">
+    <p><b>Share</b> your link with classmates, put it on a slide, or turn it into a QR code.</p>
+    <p><b>Want to change something later?</b></p>
+    <ol>
+      <li>Ask the AI for the change and save the new file</li>
+      <li>In your online folder: <b>Add file → Upload files</b></li>
+      <li>Drop in the new index.html and click <b>Commit changes</b></li>
+    </ol>
+    <p>A minute later, your website shows the new version.</p>
+    <label class="check"><input type="checkbox" data-step="9"> I shared my link</label>
+  </div>
+</details>
+
+<div class="finish" id="finish">
+  <div class="emoji">🥳</div>
+  <h2 style="margin:6px 0">You did it!</h2>
+  <p style="margin:0">Your webpage is online. Plan → ask the AI → save → upload → share. That's all there is to it.</p>
+</div>
+
+<!-- Quiz -->
+<section class="quiz">
+  <h2>Quick check 🧠</h2>
+
+  <div class="q" data-answer="1">
+    <p>1. What should your file be called?</p>
+    <button>my page.docx</button>
+    <button>index.html</button>
+    <button>website.txt</button>
+    <div class="fb"></div>
+  </div>
+
+  <div class="q" data-answer="0">
+    <p>2. You opened your page on your laptop. Can your friends see it yet?</p>
+    <button>No – it's only on my laptop so far</button>
+    <button>Yes – it's on the internet now</button>
+    <div class="fb"></div>
+  </div>
+
+  <div class="q" data-answer="2">
+    <p>3. What does "Commit changes" mean on GitHub?</p>
+    <button>Delete everything</button>
+    <button>Send an email</button>
+    <button>Save</button>
+    <div class="fb"></div>
+  </div>
+
+  <div class="q" data-answer="1">
+    <p>4. What's the best first step?</p>
+    <button>Start typing code yourself</button>
+    <button>Decide what the page should show</button>
+    <button>Buy a website address</button>
+    <div class="fb"></div>
+  </div>
+</section>
+
+<footer>Made with a little help from AI 🌱</footer>
+</div>
+
+<script>
+  // Progress (remembered in this browser)
+  const boxes = document.querySelectorAll('.check input');
+  const total = boxes.length;
+  function load() { try { return JSON.parse(localStorage.getItem('webguide-progress') || '[]'); } catch (e) { return []; } }
+  function save(l) { try { localStorage.setItem('webguide-progress', JSON.stringify(l)); } catch (e) {} }
+
+  function update() {
+    let done = 0; const list = [];
+    boxes.forEach(b => {
+      b.closest('.step').classList.toggle('done', b.checked);
+      const m = document.querySelector('[data-map="' + b.dataset.step + '"]');
+      if (m) m.classList.toggle('done', b.checked);
+      if (b.checked) { done++; list.push(b.dataset.step); }
+    });
+    document.getElementById('progressBar').style.width = (done / total * 100) + '%';
+    document.getElementById('progressLabel').textContent = done === total ? 'All done! 🎉' : done + ' of ' + total + ' steps done';
+    document.getElementById('finish').classList.toggle('show', done === total);
+    save(list);
+  }
+
+  const saved = load();
+  boxes.forEach(b => {
+    if (saved.includes(b.dataset.step)) b.checked = true;
+    b.addEventListener('change', () => {
+      update();
+      if (b.checked) {
+        let next = b.closest('.step').nextElementSibling;
+        while (next && !next.classList.contains('step')) next = next.nextElementSibling;
+        if (next) { next.open = true; next.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      }
+    });
+  });
+  update();
+
+  // Copy button
+  document.querySelectorAll('.copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const el = document.getElementById(btn.dataset.copy);
+      const text = el.innerText.replace(btn.innerText, '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied ✓';
+        setTimeout(() => btn.textContent = 'Copy message', 1500);
+      }).catch(() => { btn.textContent = 'Please select & copy'; });
+    });
+  });
+
+  // Quiz
+  document.querySelectorAll('.q').forEach(q => {
+    const right = Number(q.dataset.answer);
+    const fb = q.querySelector('.fb');
+    q.querySelectorAll('button').forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        q.querySelectorAll('button').forEach(b => b.classList.remove('right', 'wrong'));
+        if (i === right) { btn.classList.add('right'); fb.textContent = '✓ Yes, exactly!'; }
+        else { btn.classList.add('wrong'); fb.textContent = 'Not quite – have another go.'; }
+      });
+    });
+  });
+</script>
+</body>
+</html>
